@@ -1,43 +1,132 @@
-body {
+/* usamos variables poara colores */
+:root {
+    --primary-color: #1f2937;      
+    --secondary-color: #4f46e5;    
+    --accent-color: #22c55e;        
+    --bg-color: #f4f7fb;
+    --card-bg: #ffffff;
+    --text-muted: #6b7280;
+    --transition: all 0.3s ease;
+  }
+  
+  * {
+    box-sizing: border-box;
+  }
+  
+  body {
     margin: 0;
-    font-family: Arial, Helvetica, sans-serif;
-    color: #333;
-    background-color: #fafafa;
-}
-
-.hero {
-    padding: 60px;
+    font-family: 'Segoe UI', Inter, Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.7;
+    color: var(--primary-color);
+    background-color: var(--bg-color);
+  }
+  
+  /* ===== HERO ===== */
+  .hero {
+    padding: 120px 20px 90px;
     text-align: center;
-    background-color: #ffffff;
-}
-
-.navbar {
-    background-color: #f0f0f0;
-    padding: 10px;
-}
-
-.navbar ul {
+    background: linear-gradient(135deg, #4f46e5, #3b82f6);
+    color: white;
+  }
+  
+  .hero h1 {
+    font-size: 3rem;
+    margin-bottom: 0.5rem;
+    letter-spacing: 0.5px;
+  }
+  
+  .hero p {
+    font-size: 1.2rem;
+    opacity: 0.9;
+  }
+  
+  /* ===== NAVBAR ===== */
+  .navbar {
+    background-color: #111827;
+    padding: 1rem 0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  }
+  
+  .navbar ul {
     list-style: none;
     display: flex;
     justify-content: center;
-    gap: 20px;
+    gap: 40px;
     padding: 0;
-}
-
-.navbar a {
+    margin: 0;
+  }
+  
+  .navbar a {
     text-decoration: none;
-    color: #333;
-}
-
-.section {
-    padding: 40px;
-    max-width: 800px;
-    margin: auto;
-}
-
-.footer {
+    color: #e5e7eb;
+    font-weight: 500;
+    position: relative;
+    transition: var(--transition);
+  }
+  
+  .navbar a::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -6px;
+    width: 0%;
+    height: 2px;
+    background: var(--secondary-color);
+    transition: var(--transition);
+  }
+  
+  .navbar a:hover {
+    color: white;
+  }
+  
+  .navbar a:hover::after {
+    width: 100%;
+  }
+  
+  /* ===== SECTIONS ===== */
+  .section {
+    max-width: 1000px;
+    margin: 60px auto;
+    padding: 50px 40px;
+    background: var(--card-bg);
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    transition: var(--transition);
+  }
+  
+  .section:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+  }
+  
+  .section h2 {
+    margin-top: 0;
+    color: var(--secondary-color);
+    font-size: 1.8rem;
+  }
+  
+  .section p {
+    color: var(--text-muted);
+    font-size: 1.05rem;
+  }
+  
+  /* ===== FOOTER ===== */
+  .footer {
     text-align: center;
-    padding: 20px;
-    font-size: 0.9em;
-    background-color: #eaeaea;
-}
+    padding: 30px 20px;
+    font-size: 0.9rem;
+    background: #111827;
+    color: #9ca3af;
+    margin-top: 80px;
+  }
+  
+  /* ===== IMAGES ===== */
+  img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 12px;
+  }
+  
