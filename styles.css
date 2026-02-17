@@ -1,43 +1,147 @@
-body {
+/* ===== VARIABLES Y RESET ===== */
+:root {
+    --primary: #2563eb;
+    --primary-dark: #1d4ed8;
+    --light: #f8fafc;
+    --gray: #64748b;
+    --dark: #1e293b;
+    --border: #e2e8f0;
+}
+
+* {
     margin: 0;
-    font-family: Arial, Helvetica, sans-serif;
-    color: #333;
-    background-color: #fafafa;
+    padding: 0;
+    box-sizing: border-box;
 }
 
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: var(--dark);
+    background-color: var(--light);
+    line-height: 1.6;
+}
+
+/* ===== HERO SECTION ===== */
 .hero {
-    padding: 60px;
+    background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%);
+    padding: 80px 20px;
     text-align: center;
-    background-color: #ffffff;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
 }
 
+.hero::before {
+    content: "";
+    position: absolute;
+    top: -50px;
+    right: -50px;
+    width: 200px;
+    height: 200px;
+    background: url('https://cdn-icons-png.flaticon.com/512/3699/3699134.png') no-repeat center;
+    background-size: contain;
+    opacity: 0.05;
+}
+
+.hero-content h1 {
+    font-size: 2.8rem;
+    font-weight: 700;
+    color: var(--primary-dark);
+    margin-bottom: 16px;
+}
+
+.hero-content p {
+    font-size: 1.2rem;
+    color: var(--gray);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* ===== NAVBAR ===== */
 .navbar {
-    background-color: #f0f0f0;
-    padding: 10px;
+    background-color: white;
+    padding: 16px 0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
 .navbar ul {
     list-style: none;
     display: flex;
     justify-content: center;
-    gap: 20px;
+    gap: 32px;
     padding: 0;
+    margin: 0;
 }
 
 .navbar a {
     text-decoration: none;
-    color: #333;
+    color: var(--gray);
+    font-weight: 600;
+    font-size: 1.05rem;
+    transition: color 0.2s;
+    padding: 6px 0;
+    border-bottom: 2px solid transparent;
 }
 
+.navbar a:hover {
+    color: var(--primary);
+    border-bottom-color: var(--primary);
+}
+
+/* ===== SECTIONS ===== */
 .section {
-    padding: 40px;
+    padding: 60px 20px;
     max-width: 800px;
-    margin: auto;
+    margin: 0 auto;
 }
 
+.section h2 {
+    font-size: 2rem;
+    color: var(--primary-dark);
+    margin-bottom: 24px;
+    text-align: center;
+}
+
+.section p {
+    font-size: 1.1rem;
+    color: var(--gray);
+    text-align: center;
+}
+
+.contact-section {
+    background-color: white;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+}
+
+.contact-section p {
+    font-weight: 500;
+}
+
+/* ===== FOOTER ===== */
 .footer {
     text-align: center;
-    padding: 20px;
-    font-size: 0.9em;
-    background-color: #eaeaea;
+    padding: 24px;
+    font-size: 0.95rem;
+    color: var(--gray);
+    background-color: white;
+    border-top: 1px solid var(--border);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 600px) {
+    .hero-content h1 {
+        font-size: 2.2rem;
+    }
+    .hero-content p {
+        font-size: 1rem;
+    }
+    .navbar ul {
+        gap: 16px;
+        flex-direction: column;
+        align-items: center;
+    }
+    .section {
+        padding: 40px 15px;
+    }
 }
