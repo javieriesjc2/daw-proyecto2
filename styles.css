@@ -21,6 +21,7 @@ body {
     font-size: 1.1em;
 }
 
+
 .hero-img {
     margin-top: 25px;
     width: 220px;
@@ -53,6 +54,7 @@ body {
     color: #4f46e5;
 }
 
+
 .section {
     padding: 50px 20px;
     max-width: 800px;
@@ -71,8 +73,10 @@ body {
 
 .footer {
     text-align: center;
+    color: white;
     padding: 20px;
     font-size: 0.9em;
-    background-color: #eaeaea;
+    background-color: black;
+    background: linear-gradient(135deg, #4f46e5, #6366f1);
     margin-top: 40px;
 }
