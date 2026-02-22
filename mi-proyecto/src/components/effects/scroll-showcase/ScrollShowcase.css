@@ -1,0 +1,178 @@
+/* ─── HORIZONTAL SCROLL ──────────────────────────────────────── */
+.hscroll-wrapper {
+  height: 350vh;
+  position: relative;
+}
+
+.hscroll-sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: var(--bg-deep);
+}
+
+.hscroll-track {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  white-space: nowrap;
+  will-change: transform;
+}
+
+.hscroll-item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 0 60px;
+  border-right: 1px solid var(--border);
+  min-width: 280px;
+}
+
+.hscroll-item:last-child { border-right: none; }
+
+.hscroll-item__num {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--red);
+  letter-spacing: 0.2em;
+  margin-bottom: 8px;
+}
+
+.hscroll-item__word {
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 6vw, 6rem);
+  font-weight: 900;
+  color: var(--white);
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+.hscroll-item__word.outline {
+  color: transparent;
+  -webkit-text-stroke: 1.5px var(--white-faint);
+}
+
+.hscroll-progress-bar {
+  position: absolute;
+  bottom: 48px;
+  left: 48px;
+  right: 48px;
+  height: 1px;
+  background: var(--border);
+}
+
+.hscroll-progress-fill {
+  height: 100%;
+  background: var(--red);
+  transform-origin: 0%;
+  box-shadow: 0 0 8px var(--red);
+}
+
+/* ─── DEPTH CARDS GRID ───────────────────────────────────────── */
+.depth-grid-section {
+  padding: 120px 48px;
+  background: var(--bg-card);
+}
+
+.depth-grid-header {
+  margin-bottom: 80px;
+}
+
+.depth-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.depth-card {
+  position: relative;
+  padding: 40px 32px;
+  background: var(--bg-raised);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: border-color 0.3s;
+  will-change: transform;
+}
+
+.depth-card:hover {
+  border-color: var(--border-lit);
+}
+
+.depth-card:hover .depth-card__arrow {
+  transform: translate(4px, -4px);
+  color: var(--red-bright);
+}
+
+.depth-card__number {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--red);
+  letter-spacing: 0.2em;
+  margin-bottom: 40px;
+}
+
+.depth-card__tag {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--white-dim);
+  margin-bottom: 16px;
+}
+
+.depth-card__title {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--white);
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  margin-bottom: 48px;
+}
+
+.depth-card__footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.depth-card__year {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--white-faint);
+  letter-spacing: 0.1em;
+}
+
+.depth-card__arrow {
+  font-size: 1.2rem;
+  color: var(--white-dim);
+  transition: transform 0.3s, color 0.3s;
+}
+
+.depth-card__line {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.depth-card:hover .depth-card__line {
+  transform: scaleX(1);
+}
+
+@media (max-width: 900px) {
+  .depth-grid { grid-template-columns: 1fr; }
+  .hscroll-item { padding: 0 30px; min-width: 200px; }
+  .depth-grid-section { padding: 80px 24px; }
+}
