@@ -1,73 +1,76 @@
-import { motion, useMotionValue, useSpring } from 'framer-motion';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef } from 'react';
+import './CustomCursor.css';
 
 export default function CustomCursor() {
-  const cursorX = useMotionValue(-100);
-  const cursorY = useMotionValue(-100);
-  const trailX = useSpring(cursorX, { stiffness: 80, damping: 20 });
-  const trailY = useSpring(cursorY, { stiffness: 80, damping: 20 });
-  const [clicked, setClicked] = useState(false);
-  const [hovered, setHovered] = useState(false);
+  const dotRef  = useRef<HTMLDivElement>(null);
+  const ringRef = useRef<HTMLDivElement>(null);
+  const trailRef = useRef<HTMLDivElement>(null);
+  const pos = useRef({ x: 0, y: 0 });
+  const ring = useRef({ x: 0, y: 0 });
+  const rafRef = useRef<number>(0);
 
   useEffect(() => {
-    const move = (e: MouseEvent) => {
-      cursorX.set(e.clientX);
-      cursorY.set(e.clientY);
-    };
-    const down = () => setClicked(true);
-    const up   = () => setClicked(false);
-    const checkHover = (e: MouseEvent) => {
-      const el = document.elementFromPoint(e.clientX, e.clientY);
-      setHovered(!!(el?.closest('a, button, .service-card, .btn-primary, .btn-ghost')));
+    const dot  = dotRef.current;
+    const ringEl = ringRef.current;
+    const trail = trailRef.current;
+    if (!dot || !ringEl || !trail) return;
+
+    const onMove = (e: MouseEvent) => {
+      pos.current = { x: e.clientX, y: e.clientY };
+      dot.style.transform = `translate(${e.clientX}px, ${e.clientY}px) translate(-50%, -50%)`;
+      trail.style.transform = `translate(${e.clientX}px, ${e.clientY}px) translate(-50%, -50%)`;
     };
 
-    window.addEventListener('mousemove', move);
-    window.addEventListener('mousemove', checkHover);
-    window.addEventListener('mousedown', down);
-    window.addEventListener('mouseup', up);
-    return () => {
-      window.removeEventListener('mousemove', move);
-      window.removeEventListener('mousemove', checkHover);
-      window.removeEventListener('mousedown', down);
-      window.removeEventListener('mouseup', up);
+    const onEnter = () => {
+      ringEl.classList.add('cursor-ring--hover');
+      dot.classList.add('cursor-dot--hover');
     };
-  }, [cursorX, cursorY]);
+    const onLeave = () => {
+      ringEl.classList.remove('cursor-ring--hover');
+      dot.classList.remove('cursor-dot--hover');
+    };
+    const onDown = () => ringEl.classList.add('cursor-ring--click');
+    const onUp   = () => ringEl.classList.remove('cursor-ring--click');
+
+    // Spring follow for ring
+    const animate = () => {
+      ring.current.x += (pos.current.x - ring.current.x) * 0.12;
+      ring.current.y += (pos.current.y - ring.current.y) * 0.12;
+      ringEl.style.transform = `translate(${ring.current.x}px, ${ring.current.y}px) translate(-50%, -50%)`;
+      rafRef.current = requestAnimationFrame(animate);
+    };
+    animate();
+
+    const interactives = document.querySelectorAll('a, button, [role="button"], .service-card, .aurora-card, .depth-card');
+    interactives.forEach(el => {
+      el.addEventListener('mouseenter', onEnter);
+      el.addEventListener('mouseleave', onLeave);
+    });
+
+    window.addEventListener('mousemove', onMove);
+    window.addEventListener('mousedown', onDown);
+    window.addEventListener('mouseup', onUp);
+
+    return () => {
+      cancelAnimationFrame(rafRef.current);
+      window.removeEventListener('mousemove', onMove);
+      window.removeEventListener('mousedown', onDown);
+      window.removeEventListener('mouseup', onUp);
+      interactives.forEach(el => {
+        el.removeEventListener('mouseenter', onEnter);
+        el.removeEventListener('mouseleave', onLeave);
+      });
+    };
+  }, []);
 
   return (
     <>
-      {/* Punto — sigue exacto al cursor */}
-      <motion.div
-        style={{
-          position: 'fixed',
-          left: cursorX,
-          top: cursorY,
-          width: clicked ? 6 : 8,
-          height: clicked ? 6 : 8,
-          borderRadius: '50%',
-          background: '#e74c3c',
-          transform: 'translate(-50%, -50%)',
-          pointerEvents: 'none',
-          zIndex: 99999,
-          mixBlendMode: 'difference',
-        }}
-      />
-      {/* Anillo — sigue con retraso (spring) */}
-      <motion.div
-        style={{
-          position: 'fixed',
-          left: trailX,
-          top: trailY,
-          width: hovered ? 44 : clicked ? 20 : 32,
-          height: hovered ? 44 : clicked ? 20 : 32,
-          borderRadius: '50%',
-          border: `1.5px solid ${hovered ? '#e74c3c' : 'rgba(192,57,43,0.5)'}`,
-          transform: 'translate(-50%, -50%)',
-          pointerEvents: 'none',
-          zIndex: 99998,
-          transition: 'width 0.2s, height 0.2s, border-color 0.2s',
-          backdropFilter: hovered ? 'blur(2px)' : 'none',
-        }}
-      />
+      {/* Trail suave */}
+      <div ref={trailRef} className="cursor-trail" />
+      {/* Dot central */}
+      <div ref={dotRef}  className="cursor-dot" />
+      {/* Ring con spring */}
+      <div ref={ringRef} className="cursor-ring" />
     </>
   );
 }

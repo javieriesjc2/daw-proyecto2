@@ -1,0 +1,56 @@
+* { cursor: none !important; }
+
+.cursor-dot {
+  position: fixed;
+  top: 0; left: 0;
+  width: 6px; height: 6px;
+  background: #c0392b;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 99999;
+  will-change: transform;
+  transition: width 0.2s, height 0.2s, background 0.2s;
+}
+
+.cursor-dot--hover {
+  width: 10px;
+  height: 10px;
+  background: #ff8c7a;
+}
+
+.cursor-ring {
+  position: fixed;
+  top: 0; left: 0;
+  width: 36px; height: 36px;
+  border: 1.5px solid rgba(192,57,43,0.6);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 99998;
+  will-change: transform;
+  transition: width 0.3s, height 0.3s, border-color 0.3s, background 0.3s;
+}
+
+.cursor-ring--hover {
+  width: 52px;
+  height: 52px;
+  border-color: rgba(192,57,43,0.9);
+  background: rgba(192,57,43,0.06);
+}
+
+.cursor-ring--click {
+  width: 24px;
+  height: 24px;
+  background: rgba(192,57,43,0.15);
+}
+
+.cursor-trail {
+  position: fixed;
+  top: 0; left: 0;
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(192,57,43,0.25) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 99997;
+  will-change: transform;
+  filter: blur(4px);
+}

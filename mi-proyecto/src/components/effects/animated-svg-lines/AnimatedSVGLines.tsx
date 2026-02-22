@@ -5,14 +5,14 @@ import { useRef } from 'react';
 // para evitar el error de tipos con ease string en pathLength
 export default function AnimatedSVGLines() {
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, amount: 0.3 });
+  const isInView = useInView(ref, { once: false, amount: 0.3 });
 
   const lineProps = (delay: number) => ({
     initial: { pathLength: 0, opacity: 0 },
     animate: isInView ? { pathLength: 1, opacity: 1 } : { pathLength: 0, opacity: 0 },
     transition: {
       pathLength: { delay, duration: 1.2, ease: 'easeInOut' as const },
-      opacity:    { delay, duration: 0.1 },
+      opacity: { delay, duration: 0.1 },
     },
   });
 
@@ -21,7 +21,7 @@ export default function AnimatedSVGLines() {
     animate: isInView ? { pathLength: 1, opacity: 1 } : { pathLength: 0, opacity: 0 },
     transition: {
       pathLength: { delay, duration: 0.6, ease: 'easeOut' as const },
-      opacity:    { delay, duration: 0.1 },
+      opacity: { delay, duration: 0.1 },
     },
   });
 

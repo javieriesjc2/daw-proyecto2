@@ -1,10 +1,11 @@
 import { useState } from 'react';
+import { motion } from 'framer-motion';
 
 export default function ContactForm() {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [message, setMessage] = useState('');
-    const [status, setStatus] = useState<'idle'|'sending'|'sent'|'error'>('idle');
+    const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
     const [error, setError] = useState<string | null>(null);
 
     const validateEmail = (value: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
@@ -32,7 +33,15 @@ export default function ContactForm() {
     };
 
     return (
-        <form onSubmit={handleSubmit} className="max-w-lg mx-auto bg-white/3 p-6 rounded-lg">
+        <motion.form
+            onSubmit={handleSubmit}
+            className="max-w-lg mx-auto bg-white/3 p-6 rounded-lg"
+            style={{ perspective: 1200 }}
+            initial={{ opacity: 0, scale: 0.5, rotateY: -90, z: -800 }}
+            whileInView={{ opacity: 1, scale: 1, rotateY: 0, z: 0 }}
+            viewport={{ once: false, amount: 0.2 }}
+            transition={{ duration: 1.2, type: 'spring', bounce: 0.3 }}
+        >
             {error && <div className="text-sm text-red-400 mb-3">{error}</div>}
 
             <div className="mb-4">
@@ -55,6 +64,6 @@ export default function ContactForm() {
                     {status === 'sending' ? 'Enviando...' : status === 'sent' ? 'Enviado' : 'Enviar'}
                 </button>
             </div>
-        </form>
+        </motion.form>
     );
 }

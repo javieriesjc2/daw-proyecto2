@@ -1,0 +1,95 @@
+.orbiting-container {
+  position: relative;
+  width: 320px;
+  height: 320px;
+  flex-shrink: 0;
+}
+
+.orbiting-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background: var(--bg-raised);
+  border: 1px solid var(--border-lit);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+.orbiting-center__label {
+  font-family: var(--font-mono);
+  font-size: 0.55rem;
+  letter-spacing: 0.15em;
+  color: var(--red);
+}
+
+/* Anillos decorativos */
+.orbiting-container::before,
+.orbiting-container::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  border: 1px solid var(--border);
+}
+.orbiting-container::before {
+  width: 150px;
+  height: 150px;
+}
+.orbiting-container::after {
+  width: 280px;
+  height: 280px;
+}
+
+.orbiting-circle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: var(--radius);
+  height: var(--radius);
+  margin-top: calc(var(--radius) / -2);
+  margin-left: calc(var(--radius) / -2);
+  animation: orbit var(--duration) linear infinite;
+  animation-delay: var(--delay);
+}
+
+.orbiting-circle--reverse {
+  animation-direction: reverse;
+}
+
+.orbiting-circle__item {
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.orbit-icon {
+  width: 40px;
+  height: 40px;
+  background: var(--bg-raised);
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.orbit-icon:hover {
+  border-color: var(--border-lit);
+  box-shadow: 0 0 12px rgba(192,57,43,0.3);
+}
+
+@keyframes orbit {
+  0%   { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

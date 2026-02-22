@@ -1,0 +1,33 @@
+.border-beam {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.border-beam::after {
+  content: '';
+  position: absolute;
+  inset: calc(-1 * var(--border-width));
+  border-radius: inherit;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0%,
+    var(--color-from) 10%,
+    var(--color-to) 20%,
+    transparent 30%,
+    transparent 100%
+  );
+  animation: border-beam-spin var(--duration) linear infinite;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: destination-out;
+  padding: var(--border-width);
+}
+
+@keyframes border-beam-spin {
+  0%   { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

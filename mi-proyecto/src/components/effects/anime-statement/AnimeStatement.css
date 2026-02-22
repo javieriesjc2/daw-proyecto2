@@ -1,0 +1,155 @@
+.anime-statement {
+  padding: 120px 48px;
+  background: var(--bg-deep);
+  overflow: hidden;
+  position: relative;
+}
+
+.anime-statement__label {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--red);
+  margin-bottom: 48px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.anime-statement__label::after {
+  content: '';
+  flex: 1;
+  max-width: 80px;
+  height: 1px;
+  background: var(--red-dim);
+}
+
+/* ── EACH LINE ─────────────────────────────────────────────────── */
+.stmt-line {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  cursor: default;
+  position: relative;
+  overflow: hidden;
+}
+
+.stmt-line::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(192,57,43,0.04) 0%, transparent 60%);
+  transform: translateX(-100%);
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.stmt-line:hover::before {
+  transform: translateX(0);
+}
+
+/* ── NUMBER ────────────────────────────────────────────────────── */
+.stmt-num {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--red);
+  letter-spacing: 0.15em;
+  width: 28px;
+  flex-shrink: 0;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.4s, transform 0.4s;
+}
+
+.stmt-num--visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── WORD ──────────────────────────────────────────────────────── */
+.stmt-word {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+/* ── INDIVIDUAL LETTER ─────────────────────────────────────────── */
+.stmt-letter {
+  display: inline-block;
+  overflow: hidden;
+  line-height: 1;
+}
+
+.stmt-letter__inner {
+  display: inline-block;
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 7vw, 7.5rem);
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  color: var(--line-color, var(--white));
+  line-height: 1.05;
+
+  /* Start state */
+  transform: translateY(110%) rotateX(-80deg) skewX(8deg);
+  opacity: 0;
+  transition:
+    transform 0.65s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity   0.4s ease;
+  transform-origin: bottom center;
+  transform-style: preserve-3d;
+}
+
+.stmt-letter--visible .stmt-letter__inner {
+  transform: translateY(0%) rotateX(0deg) skewX(0deg);
+  opacity: 1;
+}
+
+/* Alternate lines: letters come from top */
+.stmt-line:nth-child(even) .stmt-letter__inner {
+  transform: translateY(-110%) rotateX(80deg) skewX(-8deg);
+}
+
+.stmt-line:nth-child(even) .stmt-letter--visible .stmt-letter__inner {
+  transform: translateY(0%) rotateX(0deg) skewX(0deg);
+}
+
+/* ── UNDERLINE DRAW ─────────────────────────────────────────────── */
+.stmt-underline {
+  position: absolute;
+  bottom: 2px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--line-color, var(--red));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.stmt-underline--visible {
+  transform: scaleX(1);
+}
+
+/* ── ARROW ──────────────────────────────────────────────────────── */
+.stmt-arrow {
+  font-size: 1.5rem;
+  color: var(--white-faint);
+  opacity: 0;
+  transform: translateX(-12px);
+  transition: opacity 0.3s, transform 0.3s, color 0.3s;
+  flex-shrink: 0;
+}
+
+.stmt-line:hover .stmt-arrow {
+  opacity: 1;
+  transform: translateX(0);
+  color: var(--line-color, var(--red));
+}
+
+@media (max-width: 900px) {
+  .anime-statement { padding: 80px 24px; }
+  .stmt-letter__inner { font-size: clamp(2rem, 10vw, 4rem); }
+}
