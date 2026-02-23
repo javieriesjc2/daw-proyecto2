@@ -1,7 +1,3 @@
-import { motion, type Variants } from 'framer-motion';
-import React, { useEffect, useRef } from 'react';
-import './App.css';
-// Variants used in SplitText staggerContainer and letterVariant
 import AnimatedSVGLines from '@/components/effects/animated-svg-lines/AnimatedSVGLines';
 import Aurora from '@/components/effects/aurora/Aurora';
 import BorderBeam from '@/components/effects/border-beam/BorderBeam';
@@ -14,8 +10,9 @@ import OrbitingCircles from '@/components/effects/orbiting-circles/OrbitingCircl
 import ParticleCanvas from '@/components/effects/particle-canvas/ParticleCanvas';
 import ScrollShowcase from '@/components/effects/scroll-showcase/ScrollShowcase';
 import StatsSection from '@/components/layout/stats-section/StatsSection';
-import FeaturesBento from '@/components/layout/features/FeaturesBento';
-import ScrollTimeline from '@/components/layout/timeline/ScrollTimeline';
+import { motion, type Variants } from 'framer-motion';
+import React, { useEffect, useRef } from 'react';
+import './App.css';
 
 // ─── BOOTSTRAP SVG ICONS ─────────────────────────────────────────
 const IconGlobe = () => (
@@ -56,13 +53,12 @@ const serviceIcons: Record<string, React.ReactElement> = {
     '04': <IconCloud />, '05': <IconRobot />, '06': <IconLightbulb />,
 };
 
-
 interface FlowingMenuItem { link: string; text: string; image: string; }
 const menuItems = [
-    { link: '#services', text: 'Servicios', image: 'https://picsum.photos/600/400?random=1' },
-    { link: '#about', text: 'Nosotros', image: 'https://picsum.photos/600/400?random=2' },
-    { link: '#contact', text: 'Contacto', image: 'https://picsum.photos/600/400?random=3' },
-    { link: '#gallery', text: 'Proyectos', image: 'https://picsum.photos/600/400?random=4' },
+    { link: '#services', text: 'Servicios', image: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=600&auto=format' },
+    { link: '#about', text: 'Nosotros', image: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=600&auto=format' },
+    { link: '#contact', text: 'Contacto', image: 'https://tse1.mm.bing.net/th/id/OIP.hL3dkV9MaWCx2Bl_jfRktAHaE8?rs=1&pid=ImgDetMain&o=7&rm=3' },
+    { link: '#gallery', text: 'Proyectos', image: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=600&auto=format' },
 ] as FlowingMenuItem[];
 
 const services = [
@@ -120,49 +116,24 @@ function GlitchText({ text }: { text: string }) {
     return <span ref={ref}>{text}</span>;
 }
 
+// ─── PARALLAX SECTION WRAPPER ────────────────────────────────────
+import { useScroll, useTransform } from 'framer-motion';
 
-// ─── SCROLL REVEAL HELPER (SMOOTH REACT/FRAMER) ─────────────────────────────
-
-const smoothVariants: Variants = {
-    hidden: { opacity: 0, y: 50 },
-    visible: {
-        opacity: 1,
-        y: 0,
-        transition: {
-            duration: 0.8,
-            ease: [0.16, 1, 0.3, 1]
-        }
-    }
-};
-
-function ScrollReveal({ children, animIndex = 0, delay = 0, className = '', inline = false }: { children: React.ReactNode, animIndex?: number, delay?: number, className?: string, inline?: boolean }) {
-    const Component = inline ? motion.span : motion.div;
-
-    // We add progressive delay based on the index to create a soft stagger feeling
-    const customDelay = delay + (animIndex * 0.05);
-
+function ParallaxSection({ children, className = '' }: { children: React.ReactNode; className?: string }) {
+    const ref = useRef<HTMLDivElement>(null);
+    const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] });
+    const y = useTransform(scrollYProgress, [0, 1], [40, -40]);
     return (
-        <Component
-            className={className}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: false, amount: 0.2 }}
-            variants={smoothVariants}
-            transition={{ delay: customDelay }}
-            style={{ display: inline ? 'inline-block' : 'block' }}
-        >
-            {children}
-        </Component>
+        <div ref={ref} className={className}>
+            <motion.div style={{ y }}>{children}</motion.div>
+        </div>
     );
 }
 
 export default function App() {
-
-
     return (
         <div className="app">
             <CustomCursor />
-
 
             {/* ── NAVBAR ── */}
             <motion.nav className="navbar"
@@ -227,25 +198,27 @@ export default function App() {
                 <AnimatedSVGLines />
             </motion.div>
 
-            {/* ── FLOWING MENU — emerge desde perspectiva 3D ── */}
-            <ScrollReveal animIndex={6}>
-                <motion.section className="menu-section"
-                    style={{ perspective: 1200 }}>
-                    <FlowingMenu items={menuItems as never[]} marqueeBgColor="#c0392b" />
-                </motion.section>
-            </ScrollReveal>
+            {/* ── FLOWING MENU ── */}
+            <motion.section className="menu-section"
+                style={{ perspective: 1200 }}
+                initial={{ opacity: 0, rotateX: 8, scale: 0.96, transformOrigin: 'top center' }}
+                whileInView={{ opacity: 1, rotateX: 0, scale: 1 }}
+                viewport={{ once: true, amount: 0.2 }}
+                transition={{ duration: 1, ease: cubicEase }}>
+                <FlowingMenu items={menuItems as never[]} marqueeBgColor="#c0392b" />
+            </motion.section>
 
-            {/* ── BENTO GRID FEATURES ── */}
-            <div className="relative z-10 bg-black/20 pb-20 pt-10">
-                <FeaturesBento />
-            </div>
-
-            {/* ── STATS — flip desde abajo ── */}
-            <div className="stats-wrapper">
+            {/* ── STATS ── */}
+            <motion.div className="stats-wrapper"
+                style={{ perspective: 1000 }}
+                initial={{ opacity: 0, rotateX: -20, y: 60, transformOrigin: 'bottom center' }}
+                whileInView={{ opacity: 1, rotateX: 0, y: 0 }}
+                viewport={{ once: true, amount: 0.3 }}
+                transition={{ duration: 0.9, ease: cubicEase }}>
                 <StatsSection />
-            </div>
+            </motion.div>
 
-            {/* ── MARQUEE — wipe lateral ── */}
+            {/* ── MARQUEE ── */}
             <motion.section className="marquee-section"
                 initial={{ clipPath: 'inset(0 100% 0 0)' }}
                 whileInView={{ clipPath: 'inset(0 0% 0 0)' }}
@@ -261,7 +234,12 @@ export default function App() {
             {/* ── SERVICES ── */}
             <section className="services-section" id="services">
                 <div className="services-header">
-                    <ScrollReveal animIndex={1}>
+                    <motion.div
+                        style={{ perspective: 800 }}
+                        initial={{ opacity: 0, rotateY: -15, x: -40, transformOrigin: 'left center' }}
+                        whileInView={{ opacity: 1, rotateY: 0, x: 0 }}
+                        viewport={{ once: true, amount: 0.3 }}
+                        transition={{ duration: 0.9, ease: cubicEase }}>
                         <div className="section-label">
                             <div className="section-label__line" />
                             <span className="section-label__text">Qué hacemos</span>
@@ -270,34 +248,42 @@ export default function App() {
                             <GlitchText text="NUESTROS" /><br />
                             <GlitchText text="SERVICIOS" />
                         </h2>
-                    </ScrollReveal>
-                    <ScrollReveal animIndex={5} delay={0.15}>
-                        <p className="services-header__desc">
-                            Soluciones end-to-end diseñadas para escalar tu negocio.
-                            Desde el concepto hasta el despliegue en producción.
-                        </p>
-                    </ScrollReveal>
+                    </motion.div>
+                    <motion.p className="services-header__desc"
+                        style={{ perspective: 800 }}
+                        initial={{ opacity: 0, rotateY: 15, x: 40, transformOrigin: 'right center' }}
+                        whileInView={{ opacity: 1, rotateY: 0, x: 0 }}
+                        viewport={{ once: true, amount: 0.3 }}
+                        transition={{ duration: 0.9, ease: cubicEase, delay: 0.15 }}>
+                        Soluciones end-to-end diseñadas para escalar tu negocio.
+                        Desde el concepto hasta el despliegue en producción.
+                    </motion.p>
                 </div>
 
-                <div className="services-grid">
+                <motion.div className="services-grid"
+                    initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.1 }}
+                    variants={{ hidden: {}, show: { transition: { staggerChildren: 0.09 } } }}>
                     {services.map((s, i) => (
-                        <ScrollReveal key={s.id} animIndex={i + 2} delay={i * 0.1}>
-                            <motion.div className="service-card"
-                                whileHover={{ y: -6, transition: { duration: 0.2 } }}>
-                                <BorderBeam size={150} duration={8} />
-                                <div className="service-card__number">{s.id}</div>
-                                <div className="service-card__icon">{serviceIcons[s.id]}</div>
-                                <h3 className="service-card__title">{s.title}</h3>
-                                <p className="service-card__desc">{s.desc}</p>
-                                <div className="service-card__accent" />
-                            </motion.div>
-                        </ScrollReveal>
+                        <motion.div key={s.id} className="service-card"
+                            style={{ perspective: 900 }}
+                            variants={{
+                                hidden: { opacity: 0, rotateY: i % 2 === 0 ? -25 : 25, scale: 0.88, z: -80 },
+                                show: {
+                                    opacity: 1, rotateY: 0, scale: 1, z: 0,
+                                    transition: { duration: 0.75, ease: cubicEase }
+                                }
+                            }}
+                            whileHover={{ y: -6, transition: { duration: 0.2 } }}>
+                            <BorderBeam size={150} duration={8} />
+                            <div className="service-card__number">{s.id}</div>
+                            <div className="service-card__icon">{serviceIcons[s.id]}</div>
+                            <h3 className="service-card__title">{s.title}</h3>
+                            <p className="service-card__desc">{s.desc}</p>
+                            <div className="service-card__accent" />
+                        </motion.div>
                     ))}
-                </div>
+                </motion.div>
             </section>
-
-            {/* ── SCROLL TIMELINE PROCESS ── */}
-            <ScrollTimeline />
 
             {/* ── SVG LINES DIVIDER 2 ── */}
             <motion.div style={{ padding: '0 48px', background: 'var(--bg-card)' }}
@@ -306,7 +292,7 @@ export default function App() {
                 <AnimatedSVGLines />
             </motion.div>
 
-            {/* ── SCROLL SHOWCASE — zoom desde lejos ── */}
+            {/* ── SCROLL SHOWCASE ── */}
             <motion.div
                 style={{ perspective: 1400 }}
                 initial={{ opacity: 0, scale: 0.8, rotateX: 12, transformOrigin: 'top center' }}
@@ -316,9 +302,14 @@ export default function App() {
                 <ScrollShowcase />
             </motion.div>
 
+            {/* ── GALLERY ── */}
             <section className="gallery-section" id="gallery">
-                <div className="gallery-header">
-                    <ScrollReveal delay={0.1}>
+                <ParallaxSection className="gallery-header">
+                    <motion.div
+                        initial={{ clipPath: 'inset(0 100% 0 0)', opacity: 0 }}
+                        whileInView={{ clipPath: 'inset(0 0% 0 0)', opacity: 1 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.9, ease: cubicEase }}>
                         <div className="section-label">
                             <div className="section-label__line" />
                             <span className="section-label__text">Proyectos</span>
@@ -327,42 +318,41 @@ export default function App() {
                             <SplitText text="VISTA" /><br />
                             <SplitText text="PANORÁMICA" />
                         </h2>
-                    </ScrollReveal>
-                </div>
+                    </motion.div>
+                </ParallaxSection>
                 <motion.div className="gallery-dome"
-                    initial={{ opacity: 0, y: 50 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: false, amount: 0.1 }}
-                    transition={{ duration: 0.8, ease: cubicEase }}>
+                    style={{ perspective: 1200 }}
+                    initial={{ opacity: 0, scale: 0.82, rotateX: 18, transformOrigin: 'top center' }}
+                    whileInView={{ opacity: 1, scale: 1, rotateX: 0 }}
+                    viewport={{ once: true, amount: 0.2 }}
+                    transition={{ duration: 1.2, ease: cubicEase }}>
                     <DomeGallery segments={34} grayscale={false} />
                 </motion.div>
             </section>
 
-            {/* ── EQUIPO — split 3D izq/der ── */}
+            {/* ── EQUIPO + ORBITING ── */}
             <section className="stack-section" id="about">
-                <div className="stack-section__copy">
-                    <ScrollReveal animIndex={1}>
-                        <div className="section-label">
-                            <div className="section-label__line" />
-                            <span className="section-label__text">Quiénes somos</span>
-                        </div>
-                    </ScrollReveal>
-                    <ScrollReveal animIndex={3} delay={0.1}>
-                        <h2 className="section-title">
-                            <GlitchText text="EQUIPO" /><br />
-                            <GlitchText text="EXPERTO" />
-                        </h2>
-                    </ScrollReveal>
-                    <ScrollReveal animIndex={9} delay={0.2}>
-                        <p>
-                            Más de 15 años construyendo productos digitales que marcan la diferencia.
-                            Un equipo multidisciplinar comprometido con la excelencia técnica.
-                        </p>
-                    </ScrollReveal>
-                    <ScrollReveal animIndex={5} delay={0.3}>
-                        <a href="#contact" className="btn-primary" style={{ display: 'inline-block' }}>Trabaja con nosotros</a>
-                    </ScrollReveal>
-                </div>
+                <motion.div className="stack-section__copy"
+                    style={{ perspective: 800 }}
+                    initial={{ opacity: 0, rotateY: -20, x: -60, transformOrigin: 'left center' }}
+                    whileInView={{ opacity: 1, rotateY: 0, x: 0 }}
+                    viewport={{ once: true, amount: 0.3 }}
+                    transition={{ duration: 1, ease: cubicEase }}>
+                    <div className="section-label">
+                        <div className="section-label__line" />
+                        <span className="section-label__text">Quiénes somos</span>
+                    </div>
+                    <h2 className="section-title">
+                        <GlitchText text="EQUIPO" /><br />
+                        <GlitchText text="EXPERTO" />
+                    </h2>
+                    <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}
+                        viewport={{ once: true }} transition={{ duration: 0.7, delay: 0.3 }}>
+                        Más de 15 años construyendo productos digitales que marcan la diferencia.
+                        Un equipo multidisciplinar comprometido con la excelencia técnica.
+                    </motion.p>
+                    <a href="#contact" className="btn-primary">Trabaja con nosotros</a>
+                </motion.div>
 
                 <motion.div
                     style={{ perspective: 800 }}
@@ -374,79 +364,72 @@ export default function App() {
                 </motion.div>
             </section>
 
-            {/* ── AURORA CTA — emerge desde el fondo ── */}
-            <section className="aurora-section" id="contact" style={{ position: 'relative', overflow: 'hidden' }}>
-                <div style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
-                    <Aurora />
-                    <Meteors number={10} />
-                </div>
-                <div className="aurora-content" style={{ position: 'relative', zIndex: 1, padding: '120px 48px' }}>
-                    <ScrollReveal animIndex={0} delay={0.1}>
-                        <span className="aurora-deco-number">01</span>
-                    </ScrollReveal>
-                    <ScrollReveal animIndex={5} delay={0.2}>
-                        <div className="section-label" style={{ justifyContent: 'center' }}>
-                            <div className="section-label__line" />
-                            <span className="section-label__text">Siguiente paso</span>
-                            <div className="section-label__line" />
-                        </div>
-                    </ScrollReveal>
-                    <ScrollReveal animIndex={8} delay={0.3}>
-                        <h3>¿Empezamos<br />algo grande?</h3>
-                    </ScrollReveal>
-                    <ScrollReveal animIndex={2} delay={0.4}>
-                        <p>Cuéntanos tu proyecto y construiremos juntos<br />la solución que tu negocio necesita.</p>
-                    </ScrollReveal>
-                    <div className="aurora-cards">
-                        <ScrollReveal animIndex={4} delay={0.5}>
-                            <a href="mailto:hola@novatech.com" className="aurora-card">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
-                                    <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1zm13 2.383-4.708 2.825L15 11.105zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741M1 11.105l4.708-2.897L1 5.383z" />
-                                </svg>
-                                <span>hola@novatech.com</span>
-                            </a>
-                        </ScrollReveal>
-                        <ScrollReveal animIndex={1} delay={0.6}>
-                            <a href="tel:+34600000000" className="aurora-card">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
-                                    <path d="M3.654 1.328a.678.678 0 0 0-1.015-.063L1.605 2.3c-.483.484-.661 1.169-.45 1.77a17.6 17.6 0 0 0 4.168 6.608 17.6 17.6 0 0 0 6.608 4.168c.601.211 1.286.033 1.77-.45l1.034-1.034a.678.678 0 0 0-.063-1.015l-2.307-1.794a.68.68 0 0 0-.58-.122l-2.19.547a1.75 1.75 0 0 1-1.657-.459L5.482 8.062a1.75 1.75 0 0 1-.46-1.657l.548-2.19a.68.68 0 0 0-.122-.58z" />
-                                </svg>
-                                <span>+34 600 000 000</span>
-                            </a>
-                        </ScrollReveal>
-                        <ScrollReveal animIndex={3} delay={0.7}>
-                            <a href="#" className="aurora-card">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
-                                    <path d="M0 1.146C0 .513.526 0 1.175 0h13.65C15.474 0 16 .513 16 1.146v13.708c0 .633-.526 1.146-1.175 1.146H1.175C.526 16 0 15.487 0 14.854zm4.943 12.248V6.169H2.542v7.225zm-1.2-8.212c.837 0 1.358-.554 1.358-1.248-.015-.709-.52-1.248-1.342-1.248S2.4 3.226 2.4 3.934c0 .694.521 1.248 1.327 1.248zm4.908 8.212V9.359c0-.216.016-.432.08-.586.173-.431.568-.878 1.232-.878.869 0 1.216.662 1.216 1.634v3.865h2.401V9.25c0-2.22-1.184-3.252-2.764-3.252-1.274 0-1.845.7-2.165 1.193v.025h-.016l.016-.025V6.169h-2.4c.03.678 0 7.225 0 7.225z" />
-                                </svg>
-                                <span>LinkedIn</span>
-                            </a>
-                        </ScrollReveal>
+            {/* ── AURORA CTA ── */}
+            <motion.section className="aurora-section" id="contact"
+                style={{ perspective: 1200 }}
+                initial={{ opacity: 0, scale: 0.9, rotateX: 10, transformOrigin: 'bottom center' }}
+                whileInView={{ opacity: 1, scale: 1, rotateX: 0 }}
+                viewport={{ once: true, amount: 0.1 }}
+                transition={{ duration: 1.1, ease: cubicEase }}>
+                <Aurora />
+                <Meteors number={10} />
+                <motion.div className="aurora-content"
+                    initial={{ opacity: 0, y: 40, scale: 0.95 }}
+                    whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                    viewport={{ once: true, amount: 0.2 }}
+                    transition={{ duration: 0.8, ease: cubicEase, delay: 0.4 }}>
+                    <motion.span className="aurora-deco-number"
+                        initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}
+                        viewport={{ once: true }} transition={{ duration: 1, delay: 0.2 }}>
+                        01
+                    </motion.span>
+                    <div className="section-label" style={{ justifyContent: 'center' }}>
+                        <div className="section-label__line" />
+                        <span className="section-label__text">Siguiente paso</span>
+                        <div className="section-label__line" />
                     </div>
-                    <ScrollReveal animIndex={7} delay={0.8}>
-                        <a href="mailto:hola@novatech.com" className="btn-primary" style={{ marginTop: '16px', display: 'inline-block' }}>
-                            Enviar proyecto →
+                    <h3>¿Empezamos<br />algo grande?</h3>
+                    <p>Cuéntanos tu proyecto y construiremos juntos<br />la solución que tu negocio necesita.</p>
+                    <div className="aurora-cards">
+                        <a href="mailto:hola@novatech.com" className="aurora-card">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1zm13 2.383-4.708 2.825L15 11.105zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741M1 11.105l4.708-2.897L1 5.383z" />
+                            </svg>
+                            <span>hola@novatech.com</span>
                         </a>
-                    </ScrollReveal>
-                </div>
-            </section>
+                        <a href="tel:+34600000000" className="aurora-card">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M3.654 1.328a.678.678 0 0 0-1.015-.063L1.605 2.3c-.483.484-.661 1.169-.45 1.77a17.6 17.6 0 0 0 4.168 6.608 17.6 17.6 0 0 0 6.608 4.168c.601.211 1.286.033 1.77-.45l1.034-1.034a.678.678 0 0 0-.063-1.015l-2.307-1.794a.68.68 0 0 0-.58-.122l-2.19.547a1.75 1.75 0 0 1-1.657-.459L5.482 8.062a1.75 1.75 0 0 1-.46-1.657l.548-2.19a.68.68 0 0 0-.122-.58z" />
+                            </svg>
+                            <span>+34 600 000 000</span>
+                        </a>
+                        <a href="#" className="aurora-card">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M0 1.146C0 .513.526 0 1.175 0h13.65C15.474 0 16 .513 16 1.146v13.708c0 .633-.526 1.146-1.175 1.146H1.175C.526 16 0 15.487 0 14.854zm4.943 12.248V6.169H2.542v7.225zm-1.2-8.212c.837 0 1.358-.554 1.358-1.248-.015-.709-.52-1.248-1.342-1.248S2.4 3.226 2.4 3.934c0 .694.521 1.248 1.327 1.248zm4.908 8.212V9.359c0-.216.016-.432.08-.586.173-.431.568-.878 1.232-.878.869 0 1.216.662 1.216 1.634v3.865h2.401V9.25c0-2.22-1.184-3.252-2.764-3.252-1.274 0-1.845.7-2.165 1.193v.025h-.016l.016-.025V6.169h-2.4c.03.678 0 7.225 0 7.225z" />
+                            </svg>
+                            <span>LinkedIn</span>
+                        </a>
+                    </div>
+                    <a href="mailto:hola@novatech.com" className="btn-primary" style={{ marginTop: '16px' }}>
+                        Enviar proyecto →
+                    </a>
+                </motion.div>
+            </motion.section>
 
             {/* ── FOOTER ── */}
-            <footer className="footer">
-                <ScrollReveal animIndex={0}>
-                    <div>
-                        <div className="footer__brand">NOVA<span>TECH</span></div>
-                        <p className="footer__copy">© 2026 NovaTech Solutions — Hecho con React + Vite</p>
-                    </div>
-                </ScrollReveal>
-                <ScrollReveal animIndex={5} delay={0.2}>
-                    <ul className="footer__links">
-                        <li><a href="#services">Servicios</a></li>
-                        <li><a href="#gallery">Proyectos</a></li>
-                        <li><a href="#contact">Contacto</a></li>
-                    </ul>
-                </ScrollReveal>
-            </footer>
+            <motion.footer className="footer"
+                initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }} transition={{ duration: 0.6, ease: cubicEase }}>
+                <div>
+                    <div className="footer__brand">NOVA<span>TECH</span></div>
+                    <p className="footer__copy">© 2026 NovaTech Solutions — Hecho con React + Vite</p>
+                </div>
+                <ul className="footer__links">
+                    <li><a href="#services">Servicios</a></li>
+                    <li><a href="#gallery">Proyectos</a></li>
+                    <li><a href="#contact">Contacto</a></li>
+                </ul>
+            </motion.footer>
         </div>
     );
 }
