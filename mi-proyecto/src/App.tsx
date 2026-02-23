@@ -320,7 +320,7 @@ export default function App() {
                         </h2>
                     </motion.div>
                 </ParallaxSection>
-                <motion.div className="gallery-dome"
+                <motion.div className="gallery-domee"
                     style={{ perspective: 1200 }}
                     initial={{ opacity: 0, scale: 0.82, rotateX: 18, transformOrigin: 'top center' }}
                     whileInView={{ opacity: 1, scale: 1, rotateX: 0 }}
